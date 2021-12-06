@@ -32,6 +32,12 @@
 * Kubernetes Cluster + Microservices are running
 
 # Assignments of Responsibilities
-* Alexander Kainzinger: **TBD**
-* Gabriel Guldner: Rust, **TBD**
-* Tobias Schwap: **TBD**
+* Alexander Kainzinger: 
+  * Frontend (+ Dockerfile)
+  * ArgoCD
+* Gabriel Guldner: 
+  * Corona Backend (+ Dockerfile)
+  * Kubernetes cluster
+* Tobias Schwap:
+  * Country Backend (+ Dockerfile)
+  * GitHub Actions
