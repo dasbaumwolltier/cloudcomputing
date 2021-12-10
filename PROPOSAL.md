@@ -24,6 +24,10 @@
   * Deploy ArgoCD (or Github action deploy)
   * Deploy applications (Deployment, Service, Ingress, Certificate)
 
+The following image describes the architecture:
+
+![Architecture Diagram](architecture-diagram.png)
+
 # Definition of Milestones
 * Start project
 * Microservices are running locally
@@ -35,9 +39,19 @@
 * Alexander Kainzinger: 
   * Frontend (+ Dockerfile)
   * ArgoCD
+    * Installation and basic configuration
+    * Enable and Configure Auto-Sync
+    * Set up deployments of apps
 * Gabriel Guldner: 
   * Corona Backend (+ Dockerfile)
   * Kubernetes cluster
+    * Set up https and certificate for domain
+    * Set up ingress
+    * Set up Docker registry
+    * Set up service
 * Tobias Schwap:
   * Country Backend (+ Dockerfile)
   * GitHub Actions
+    * Set up automatic triggering of actions
+    * Set up build jobs
+    * Set up release job (update deployment YAML)

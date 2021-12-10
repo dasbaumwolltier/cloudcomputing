@@ -1,0 +1,84 @@
+@startuml
+actor User
+rectangle UI
+
+actor Developer
+
+cloud Cluster {
+    rectangle Registry
+}
+
+cloud GitHub {
+    rectangle Repository
+    frame Action {
+        rectangle Build_Application
+        rectangle Build_Image
+        rectangle Push_Image
+        rectangle Update_Deployment
+    }
+
+    Build_Application -r-> Build_Image
+    Build_Image -d-> Push_Image
+    Push_Image -l-> Registry: Upload Image
+    Push_Image --> Update_Deployment
+    Update_Deployment --> Repository: Update Deployment YAML
+}
+
+Developer -> Repository: Push changes
+Repository -> Action: Trigger Action
+
+cloud Cluster {
+    rectangle LoadBalancer
+    rectangle ArgoCD
+
+    rectangle FrontendDeployment
+    rectangle CoronaBackendDeployment
+    rectangle CountryBackendDeployment
+
+    rectangle FrontendService
+    rectangle CoronaBackendService
+    rectangle CountryBackendService
+
+    frame "Frontend Pods" as fp {
+        frame "Frontend Containers" {
+            rectangle frontend_nginx
+            artifact ReactUI
+        }
+    }
+
+    frame "Corona Backend Pod" as cbp {
+        frame "Corona Backend Container" {
+            rectangle RustApplication
+        }
+    }
+
+    frame "Country Backend Pod" as obp {
+        frame "Country Backend Container" {
+            rectangle ExpressJSApplication
+        }
+    }
+}
+
+User -u-> UI
+UI -u-> LoadBalancer: HTTPS:443
+
+FrontendDeployment -d-> fp: Deploy
+CoronaBackendDeployment -d-> cbp: Deploy
+CountryBackendDeployment -d-> obp: Deploy
+
+LoadBalancer -u-> FrontendService: : HTTP:8080
+LoadBalancer -u-> CoronaBackendService: : HTTP:8080
+LoadBalancer -u-> CountryBackendService: : HTTP:8080
+
+frontend_nginx -> ReactUI
+
+FrontendService -u-> frontend_nginx: HTTP:80
+CoronaBackendService -u-> RustApplication
+CountryBackendService -u-> ExpressJSApplication
+
+ArgoCD -> Repository: Is Branch out-of-sync?
+
+ArgoCD -d-> FrontendDeployment: Deploy
+ArgoCD -d-> CoronaBackendDeployment: Deploy
+ArgoCD -d-> CountryBackendDeployment: Deploy
+@enduml
