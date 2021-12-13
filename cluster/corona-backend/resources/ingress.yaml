@@ -1,0 +1,17 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: registry
+  namespace: registry
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`schwap.kainzinger.guldner.eu`)
+    services:
+    - name: corona-backend
+      scheme: http
+      port: 8080
+  tls:
+    secretName: guldner.eu

@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: schwap.kainzinger.guldner.eu
+  namespace: default
+spec:
+  dnsNames:
+    - schwap.kainzinger.guldner.eu
+  secretName: schwap.kainzinger.guldner.eu
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
