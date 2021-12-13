@@ -1,0 +1,10 @@
+persistence:
+  accessMode: ReadWriteMany
+  enabled: true
+  storageClass: longhorn
+  deleteEnabled: true
+
+# secrets.htpasswd: "<generate htpassword>"
+
+metrics:
+  enabled: true

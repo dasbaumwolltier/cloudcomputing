@@ -1,0 +1,17 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: registry
+  namespace: registry
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`registry.guldner.eu`)
+    services:
+    - name: registry-docker-registry
+      scheme: http
+      port: 5000
+  tls:
+    secretName: guldner.eu
