@@ -2,7 +2,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: schwap.kainzinger.guldner.eu
-  namespace: default
+  namespace: cloudcomputing
 spec:
   dnsNames:
     - schwap.kainzinger.guldner.eu
