@@ -1,30 +1,33 @@
 import React, { createContext, useContext, useState } from "react"
 
-import { CoronaParams, CoronaResponse } from "../types/corona-backend"
+import { CoronaParams, CoronaData } from "../types/corona-backend"
+import { CountryData } from "../types/country-backend"
 import { useNotification } from "./NotificationProvider"
 
 const CORONA_API_URL = "/corona/api"
-const COUNTRY_API_URL = "/country/api"
+const COUNTRY_API_URL = "https://restcountries.com/v3.1/all" //"/country/api"
 
 const useApiProvider = () => {
   const { showNotification } = useNotification()
 
   const [isLoadingCountries, setLoadingCountries] = useState<boolean>(false)
   const [isLoadingCorona, setLoadingCorona] = useState<boolean>(false)
-  const [countries, setCountries] = useState<string[] | undefined>()
+  const [countries, setCountries] = useState<CountryData[]>([])
+  const [coronaData, setCoronaData] = useState<CoronaData[] | undefined>()
 
   const fetchCorona = async (country: string, params?: CoronaParams) => {
     setLoadingCorona(true)
 
     try {
       const queryParams = new URLSearchParams(params)
-      const response = await fetch(`${CORONA_API_URL}/${country}?${queryParams.toString()}`)
+      const response = await fetch(`${CORONA_API_URL}/${country.toLowerCase()}?${queryParams.toString()}`)
 
       if (!response.ok) {
         throw new Error(response.statusText)
       }
 
-      const coronaData = (await response.json()) as CoronaResponse[]
+      const coronaData = (await response.json()) as CoronaData[]
+      setCoronaData(coronaData)
       return coronaData
     } catch (err) {
       showNotification({ type: "error", message: `Error fetching corona data from API. ${err}` })
@@ -43,7 +46,8 @@ const useApiProvider = () => {
         throw new Error(response.statusText)
       }
 
-      const countries = (await response.json()) as string[]
+      const countries = (await response.json()) as CountryData[]
+      countries.sort((a, b) => a.name.common.localeCompare(b.name.common))
       setCountries(countries)
       return countries
     } catch (err) {
@@ -53,7 +57,7 @@ const useApiProvider = () => {
     }
   }
 
-  return { isLoadingCountries, isLoadingCorona, countries, fetchCountries, fetchCorona }
+  return { isLoadingCountries, isLoadingCorona, countries, coronaData, fetchCountries, fetchCorona }
 }
 
 export const ApiContext = createContext({})

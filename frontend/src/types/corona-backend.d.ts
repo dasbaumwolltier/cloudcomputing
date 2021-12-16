@@ -6,7 +6,7 @@ export type CoronaParams = {
 
 export type CoronaProperty = "Confirmed" | "Deaths" | "Recovered" | "Active"
 
-export type CoronaResponse = {
+export type CoronaData = {
   country: string
   date: string
   confirmed?: number
