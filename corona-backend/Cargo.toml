@@ -18,5 +18,15 @@ simplelog = "0.11"
 
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-reqwest = { version = "0.11", features = ["json"] }
 serde_with = { version = "1.11", features = ["macros"] }
+
+reqwest = { version = "0.11", features = ["json"] }
+# hyper-tls = { versio = "", features = ["vendored"] }
+
+# rustls = "0.20"
+# openssl = { version = "0.10", features = ["vendored"] }
+
+[features]
+# default = ["reqwest/native-tls-vendored"]
+
+# rustls = ["actix-web/rustls", "reqwest/rustls", "reqwest/tokio-rustls"]

@@ -1,8 +1,16 @@
-FROM rust:1-alpine3.14 as build
+FROM archlinux as build
 
-RUN apk update &&\
-    apk upgrade &&\
-    apk add --no-cache musl-dev openssl-dev pkgconf
+# RUN apk update &&\
+#     apk upgrade &&\
+#     apk add --no-cache musl-dev openssl-dev pkgconf
+
+# RUN apt update &&\
+#     apt upgrade -y &&\
+#     apt install -y libssl-dev
+
+RUN pacman -Suy --noconfirm &&\
+    pacman -S --noconfirm rustup base-devel &&\
+    rustup install stable
 
 RUN mkdir /build
 
@@ -11,11 +19,16 @@ WORKDIR /build
 
 RUN ls -la /build &&\
     cargo build --release
+    # RUSTFLAGE="-C link-arg=-static" cargo build --release
+    # RUSTFLAGS="-C target-feature=-crt-static" cargo build --release
 
-FROM alpine:3.14
+FROM archlinux
 
-RUN apk update &&\
-    apk add libgcc openssl
+# RUN apt update &&\
+#     apt install -y openssl
+
+RUN pacman -Suy --noconfirm &&\
+    pacman -S --noconfirm openssl
 
 COPY --from=build /build/target/release/corona-backend /usr/local/bin/corona-backend
 RUN chmod +x /usr/local/bin/corona-backend
