@@ -1,17 +1,104 @@
-import React, { Fragment } from "react"
+import React, { Fragment, memo, useCallback } from "react"
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend } from "chart.js"
+import { Line } from "react-chartjs-2"
 import { Dialog, Transition } from "@headlessui/react"
 import { XIcon } from "@heroicons/react/outline"
+import memoize from "memoize-one"
+import { FixedSizeList as List, areEqual } from "react-window"
 
 import Spinner from "./common/spinner"
 import { useApi } from "../providers/ApiProvider"
+import { classNames } from "../utils/common.util"
+import { CoronaData, CoronaProperty } from "../types/corona-backend"
 
 interface ICoronaDataModal {
   open: boolean
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend)
+
+export const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top" as const
+    }
+  }
+}
+
+const createItemData = memoize((coronaData: CoronaData[]) => ({
+  coronaData
+}))
+
 const CoronaDataModal: React.FC<ICoronaDataModal> = ({ open, setOpen }) => {
   const { isLoadingCorona, coronaData } = useApi()
+  const itemData = createItemData(coronaData)
+
+  const labels = useCallback(() => {
+    return [
+      ...new Set(
+        coronaData.map((c) => {
+          const date = new Date(c.date)
+          return `${date.getMonth() + 1}/${date.getFullYear()}`
+        })
+      )
+    ]
+  }, [coronaData])
+
+  const calculateDateForProp = (property: CoronaProperty) => {
+    const groups = labels()
+    const data = []
+
+    for (const label of groups) {
+      const [month, year] = label.split("/")
+      const deathsPerDay = coronaData
+        .filter((d) => {
+          const date = new Date(d.date)
+          return date.getFullYear().toString() === year && (date.getMonth() + 1).toString() === month
+        })
+        .map((d) => d[property]!)
+
+      const averagePerMonth = deathsPerDay.reduce((sum, element) => sum + element, 0) / deathsPerDay.length
+      data.push(averagePerMonth)
+    }
+
+    return data
+  }
+
+  const deathsDataset = useCallback(() => {
+    return {
+      label: "Deaths",
+      data: calculateDateForProp("deaths"),
+      borderColor: "rgb(255, 99, 132)",
+      backgroundColor: "rgba(255, 99, 132, 0.5)"
+    }
+  }, [labels()])
+
+  const activeDataset = useCallback(() => {
+    return {
+      label: "Active",
+      data: calculateDateForProp("active"),
+      borderColor: "rgb(53, 162, 235)",
+      backgroundColor: "rgba(53, 162, 235, 0.5)"
+    }
+  }, [labels()])
+
+  const confirmedDataset = useCallback(() => {
+    return {
+      label: "Confirmed",
+      data: calculateDateForProp("confirmed"),
+      borderColor: "rgb(0, 205, 101)",
+      backgroundColor: "rgba(0, 205, 101, 0.5)"
+    }
+  }, [labels()])
+
+  const chartData = useCallback(() => {
+    return {
+      labels: labels(),
+      datasets: [activeDataset(), deathsDataset(), confirmedDataset()]
+    }
+  }, [activeDataset(), deathsDataset(), confirmedDataset()])
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -62,8 +149,67 @@ const CoronaDataModal: React.FC<ICoronaDataModal> = ({ open, setOpen }) => {
                     </h3>
 
                     <div className="border-t border-gray-200 pt-5">
-                      {!isLoadingCorona && <Spinner />}
-                      {JSON.stringify(coronaData, undefined, 4)}
+                      {isLoadingCorona && <Spinner />}
+                      {!isLoadingCorona && coronaData && (
+                        <>
+                          <Line options={options} data={chartData()} />
+                          <div className="flex flex-col mt-4">
+                            <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                              <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                                <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                                  <table className="min-w-full divide-y divide-gray-200">
+                                    <thead className="bg-gray-50 table table-fixed w-full">
+                                      <tr>
+                                        <th
+                                          scope="col"
+                                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                        >
+                                          Date
+                                        </th>
+                                        <th
+                                          scope="col"
+                                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                        >
+                                          Active
+                                        </th>
+                                        <th
+                                          scope="col"
+                                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                        >
+                                          Deaths
+                                        </th>
+                                        <th
+                                          scope="col"
+                                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                        >
+                                          Confirmed
+                                        </th>
+                                        <th
+                                          scope="col"
+                                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                        >
+                                          Recovered
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody className="overflow-hidden block">
+                                      <List
+                                        height={260}
+                                        itemCount={coronaData.length}
+                                        itemData={itemData.coronaData}
+                                        itemSize={52}
+                                        width="100%"
+                                      >
+                                        {TableEntry}
+                                      </List>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </section>
                 </div>
@@ -75,5 +221,26 @@ const CoronaDataModal: React.FC<ICoronaDataModal> = ({ open, setOpen }) => {
     </Transition.Root>
   )
 }
+
+const TableEntry = memo(({ data, index, style }: { data: CoronaData[]; index: number; style: React.CSSProperties }) => {
+  const d = data[index]
+  return (
+    <tr
+      style={style}
+      key={index}
+      className={classNames("table table-fixed w-full", index % 2 === 0 ? "bg-white" : "bg-gray-50")}
+    >
+      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+        {new Date(d.date).toLocaleDateString("de-DE")}
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{d.active}</td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{d.deaths}</td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{d.confirmed}</td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{d.recovered}</td>
+    </tr>
+  )
+}, areEqual)
+
+TableEntry.displayName = "TableEntry"
 
 export default CoronaDataModal

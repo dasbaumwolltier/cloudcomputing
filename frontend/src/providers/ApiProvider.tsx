@@ -4,7 +4,7 @@ import { CoronaParams, CoronaData } from "../types/corona-backend"
 import { CountryData } from "../types/country-backend"
 import { useNotification } from "./NotificationProvider"
 
-const CORONA_API_URL = "/corona/api"
+const CORONA_API_URL = "/corona/api" //  http://localhost:8080/api
 const COUNTRY_API_URL = "https://restcountries.com/v3.1/all" //"/country/api"
 
 const useApiProvider = () => {
@@ -13,14 +13,16 @@ const useApiProvider = () => {
   const [isLoadingCountries, setLoadingCountries] = useState<boolean>(false)
   const [isLoadingCorona, setLoadingCorona] = useState<boolean>(false)
   const [countries, setCountries] = useState<CountryData[]>([])
-  const [coronaData, setCoronaData] = useState<CoronaData[] | undefined>()
+  const [coronaData, setCoronaData] = useState<CoronaData[]>([])
 
   const fetchCorona = async (country: string, params?: CoronaParams) => {
     setLoadingCorona(true)
 
     try {
       const queryParams = new URLSearchParams(params)
-      const response = await fetch(`${CORONA_API_URL}/${country.toLowerCase()}?${queryParams.toString()}`)
+      const response = await fetch(
+        `${CORONA_API_URL}/${country.toLowerCase()}${queryParams.values.length ? `?${queryParams.toString()}` : ""}`
+      )
 
       if (!response.ok) {
         throw new Error(response.statusText)
