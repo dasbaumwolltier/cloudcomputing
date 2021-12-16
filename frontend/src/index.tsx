@@ -4,9 +4,16 @@ import "./index.css"
 import App from "./App"
 import reportWebVitals from "./reportWebVitals"
 
+import { ApiProvider } from "./providers/ApiProvider"
+import { NotificationProvider } from "./providers/NotificationProvider"
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <NotificationProvider>
+      <ApiProvider>
+        <App />
+      </ApiProvider>
+    </NotificationProvider>
   </React.StrictMode>,
   document.getElementById("root")
 )
