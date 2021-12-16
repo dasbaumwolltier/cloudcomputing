@@ -49,7 +49,7 @@ const CountrySelector: React.FC<ICountrySelector> = ({ countries, onSelection })
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-40 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+              <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-40 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
                 {countries.map((country) => (
                   <Listbox.Option
                     key={country.name.common}

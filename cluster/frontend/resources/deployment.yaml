@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: cloudcomputing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudcomp-frontend
+  template:
+    metadata:
+      labels:
+        app: cloudcomp-frontend
+    spec:
+      containers:
+      - name: cloudcomp-frontend
+        image: registry.guldner.eu/cloudcomp-frontend:cloudcomp-frontend:20211216-1728
+        ports:
+        - containerPort: 80

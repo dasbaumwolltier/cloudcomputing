@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: corona-backend
+  namespace: cloudcomputing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudcomp-corona-backend
+  template:
+    metadata:
+      labels:
+        app: cloudcomp-corona-backend
+    spec:
+      containers:
+      - name: cloudcomp-corona-backend
+        image: registry.guldner.eu/cloudcomp-corona-backend:20211216-1728
+        ports:
+        - containerPort: 8080
