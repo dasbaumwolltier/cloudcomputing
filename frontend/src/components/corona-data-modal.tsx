@@ -35,36 +35,46 @@ const CoronaDataModal: React.FC<ICoronaDataModal> = ({ open, setOpen }) => {
   const { isLoadingCorona, coronaData } = useApi()
   const itemData = createItemData(coronaData)
 
+  const formatDate = useCallback((date: Date | string) => {
+    date = new Date(date)
+    return `${date.getMonth() + 1}/${date.getFullYear()}`
+  }, [])
+
   const labels = useCallback(() => {
-    return [
-      ...new Set(
-        coronaData.map((c) => {
-          const date = new Date(c.date)
-          return `${date.getMonth() + 1}/${date.getFullYear()}`
-        })
-      )
-    ]
+    return [...new Set(coronaData.map((c) => formatDate(c.date)))]
   }, [coronaData])
 
-  const calculateDateForProp = (property: CoronaProperty) => {
-    const groups = labels()
-    const data = []
+  const calculateDateForProp = useCallback(
+    (property: CoronaProperty) => {
+      const data = []
+      let index = 0
+      let count = 0
+      let startDate = formatDate(coronaData[0].date)
 
-    for (const label of groups) {
-      const [month, year] = label.split("/")
-      const deathsPerDay = coronaData
-        .filter((d) => {
-          const date = new Date(d.date)
-          return date.getFullYear().toString() === year && (date.getMonth() + 1).toString() === month
-        })
-        .map((d) => d[property]!)
+      for (const point of coronaData) {
+        const pointDate = formatDate(point.date)
 
-      const averagePerMonth = deathsPerDay.reduce((sum, element) => sum + element, 0) / deathsPerDay.length
-      data.push(averagePerMonth)
-    }
+        if (pointDate === startDate) {
+          index++
+          count += point[property]!
+          continue
+        }
 
-    return data
-  }
+        // caluclate average of month
+        data.push(count / index)
+
+        // save first point of new date
+        index = 1
+        count = point[property]!
+        startDate = pointDate
+      }
+
+      data.push(count / index)
+
+      return data
+    },
+    [coronaData]
+  )
 
   const deathsDataset = useCallback(() => {
     return {
@@ -73,7 +83,7 @@ const CoronaDataModal: React.FC<ICoronaDataModal> = ({ open, setOpen }) => {
       borderColor: "rgb(255, 99, 132)",
       backgroundColor: "rgba(255, 99, 132, 0.5)"
     }
-  }, [labels()])
+  }, [labels])
 
   const activeDataset = useCallback(() => {
     return {
@@ -82,7 +92,7 @@ const CoronaDataModal: React.FC<ICoronaDataModal> = ({ open, setOpen }) => {
       borderColor: "rgb(53, 162, 235)",
       backgroundColor: "rgba(53, 162, 235, 0.5)"
     }
-  }, [labels()])
+  }, [labels])
 
   const confirmedDataset = useCallback(() => {
     return {
@@ -91,14 +101,14 @@ const CoronaDataModal: React.FC<ICoronaDataModal> = ({ open, setOpen }) => {
       borderColor: "rgb(0, 205, 101)",
       backgroundColor: "rgba(0, 205, 101, 0.5)"
     }
-  }, [labels()])
+  }, [labels])
 
   const chartData = useCallback(() => {
     return {
       labels: labels(),
       datasets: [activeDataset(), deathsDataset(), confirmedDataset()]
     }
-  }, [activeDataset(), deathsDataset(), confirmedDataset()])
+  }, [activeDataset, deathsDataset, confirmedDataset])
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -150,7 +160,7 @@ const CoronaDataModal: React.FC<ICoronaDataModal> = ({ open, setOpen }) => {
 
                     <div className="border-t border-gray-200 pt-5">
                       {isLoadingCorona && <Spinner />}
-                      {!isLoadingCorona && coronaData && (
+                      {!isLoadingCorona && coronaData.length && (
                         <>
                           <Line options={options} data={chartData()} />
                           <div className="flex flex-col mt-4">
