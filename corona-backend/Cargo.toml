@@ -26,7 +26,11 @@ reqwest = { version = "0.11", features = ["json"] }
 # rustls = "0.20"
 # openssl = { version = "0.10", features = ["vendored"] }
 
+[target.'cfg(target_env = "musl")'.dependencies]
+jemallocator = "0.3"
+
 [features]
+
 # default = ["reqwest/native-tls-vendored"]
 
 # rustls = ["actix-web/rustls", "reqwest/rustls", "reqwest/tokio-rustls"]

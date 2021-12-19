@@ -1,4 +1,6 @@
-#[macro_use] extern crate cached;
+#[cfg(target_env = "musl")]
+#[global_allocator] 
+static GLOBAL_ALLOC: jemallocator::Jemalloc = jemallocator::Jemalloc;
 
 use actix_cors::Cors;
 use actix_web::{HttpServer, App};
