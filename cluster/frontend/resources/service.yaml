@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: cloudcomp-frontend
+  namespace: cloudcomputing
   labels:
     app: cloudcomp-frontend
 spec:

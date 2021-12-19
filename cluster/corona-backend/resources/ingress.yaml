@@ -8,10 +8,23 @@ spec:
   - websecure
   routes:
   - kind: Rule
-    match: Host(`schwap.kainzinger.guldner.eu`) && Path(`/corona`)
+    match: Host(`schwap.kainzinger.guldner.eu`) && PathPrefix(`/corona`)
     services:
     - name: cloudcomp-corona-backend
       scheme: http
       port: 8080
+    middlewares:
+    - name: stripprefix
   tls:
-    secretName: guldner.eu
+    secretName: schwap.kainzinger.guldner.eu
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: stripprefix
+  namespace: cloudcomputing
+spec:
+  stripPrefix:
+    prefixes:
+    - /corona
+    - /country

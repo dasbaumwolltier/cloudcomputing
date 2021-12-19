@@ -15,6 +15,8 @@ spec:
     spec:
       containers:
       - name: cloudcomp-corona-backend
-        image: registry.guldner.eu/cloudcomp-corona-backend:20211216-1728
+        image: registry.guldner.eu/cloudcomp-corona-backend:20211219-1852
         ports:
         - containerPort: 8080
+      imagePullSecrets:
+      - name: pull-secret
