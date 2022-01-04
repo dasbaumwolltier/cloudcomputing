@@ -17,13 +17,3 @@ spec:
     - name: stripprefix
   tls:
     secretName: schwap.kainzinger.guldner.eu
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: stripprefix
-  namespace: cloudcomputing
-spec:
-  stripPrefix:
-    prefixes:
-    - /country

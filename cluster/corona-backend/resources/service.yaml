@@ -6,9 +6,9 @@ metadata:
   labels:
     app: cloudcomp-corona-backend
 spec:
+  selector:
+    app: cloudcomp-corona-backend
   ports:
   - port: 8080
     protocol: TCP
     targetPort: 8080
-  selector:
-    app: cloudcomp-corona-backend

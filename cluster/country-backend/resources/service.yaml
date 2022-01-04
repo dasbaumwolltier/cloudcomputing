@@ -6,9 +6,9 @@ metadata:
   labels:
     app: cloudcomp-country-backend
 spec:
+  selector:
+    app: cloudcomp-country-backend
   ports:
   - port: 8081
     protocol: TCP
     targetPort: 8081
-  selector:
-    app: cloudcomp-country-backend
