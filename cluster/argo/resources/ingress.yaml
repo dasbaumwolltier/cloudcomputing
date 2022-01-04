@@ -1,0 +1,16 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: argo
+  namespace: argocd
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`argo.guldner.eu`)
+    services:
+    - name: argo-cd-server
+      port: 80
+  tls:
+    secretName: argo.guldner.eu

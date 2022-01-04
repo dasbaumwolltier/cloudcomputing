@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: argo.guldner.eu
+  namespace: argocd
+spec:
+  dnsNames:
+    - argo.guldner.eu
+  secretName: argo.guldner.eu
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer

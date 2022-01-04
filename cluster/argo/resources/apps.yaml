@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: country-backend
+  namespace: argocd
+status:
+spec:
+  destination:
+    namespace: cloudcomputing
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: cluster/country-backend
+    repoURL: https://github.com/dasbaumwolltier/cloudcomputing.git
+    targetRevision: HEAD
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: corona-frontend
+  namespace: argocd
+status:
+spec:
+  destination:
+    namespace: cloudcomputing
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: cluster/frontend
+    repoURL: https://github.com/dasbaumwolltier/cloudcomputing.git
+    targetRevision: HEAD
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: corona-backend
+  namespace: argocd
+status:
+spec:
+  destination:
+    namespace: cloudcomputing
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: cluster/corona-backend
+    repoURL: https://github.com/dasbaumwolltier/cloudcomputing.git
+    targetRevision: HEAD
