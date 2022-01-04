@@ -1,18 +1,18 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: corona-backend
+  name: country-backend
   namespace: cloudcomputing
 spec:
   entryPoints:
   - websecure
   routes:
   - kind: Rule
-    match: Host(`schwap.kainzinger.guldner.eu`) && PathPrefix(`/corona`)
+    match: Host(`schwap.kainzinger.guldner.eu`) && PathPrefix(`/country`)
     services:
-    - name: cloudcomp-corona-backend
+    - name: cloudcomp-country-backend
       scheme: http
-      port: 8080
+      port: 8081
     middlewares:
     - name: stripprefix
   tls:
@@ -26,4 +26,4 @@ metadata:
 spec:
   stripPrefix:
     prefixes:
-    - /corona
+    - /country

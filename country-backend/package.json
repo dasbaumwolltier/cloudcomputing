@@ -2,9 +2,10 @@
   "name": "country-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "ts-node-dev ./index.ts"
+    "start": "ts-node-dev ./index.ts",
+    "build": "tsc"
   },
   "author": "",
   "license": "ISC",

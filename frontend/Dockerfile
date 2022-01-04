@@ -1,6 +1,6 @@
 FROM nginx:1.20-alpine
 
-ADD build/ /build
+COPY build/ /build
 
 WORKDIR / 
 

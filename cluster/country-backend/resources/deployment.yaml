@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: country-backend
+  namespace: cloudcomputing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudcomp-country-backend
+  template:
+    metadata:
+      labels:
+        app: cloudcomp-country-backend
+    spec:
+      containers:
+      - name: cloudcomp-country-backend
+        image: registry.guldner.eu/cloudcomp-country-backend:20220104-2000
+        ports:
+        - containerPort: 8081
+      imagePullSecrets:
+      - name: pull-secret

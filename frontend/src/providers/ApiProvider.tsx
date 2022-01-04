@@ -5,7 +5,7 @@ import { CountryData } from "../types/country-backend"
 import { useNotification } from "./NotificationProvider"
 
 const CORONA_API_URL = "/corona/api" //  http://localhost:8080/api
-const COUNTRY_API_URL = "https://restcountries.com/v3.1/all" //"/country/api"
+const COUNTRY_API_URL = "/country/api" // http://localhost:8081/api/all
 
 const useApiProvider = () => {
   const { showNotification } = useNotification()
@@ -42,7 +42,7 @@ const useApiProvider = () => {
     setLoadingCountries(true)
 
     try {
-      const response = await fetch(COUNTRY_API_URL)
+      const response = await fetch(`${COUNTRY_API_URL}/all`)
 
       if (!response.ok) {
         throw new Error(response.statusText)
