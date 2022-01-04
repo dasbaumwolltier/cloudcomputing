@@ -160,7 +160,7 @@ const CoronaDataModal: React.FC<ICoronaDataModal> = ({ open, setOpen }) => {
 
                     <div className="border-t border-gray-200 pt-5">
                       {isLoadingCorona && <Spinner />}
-                      {!isLoadingCorona && coronaData.length && (
+                      {!isLoadingCorona && coronaData.length ? (
                         <>
                           <Line options={options} data={chartData()} />
                           <div className="flex flex-col mt-4">
@@ -219,7 +219,7 @@ const CoronaDataModal: React.FC<ICoronaDataModal> = ({ open, setOpen }) => {
                             </div>
                           </div>
                         </>
-                      )}
+                      ) : null}
                     </div>
                   </section>
                 </div>
