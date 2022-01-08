@@ -1,0 +1,24 @@
+name: BUILD_APPLICATION
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build Frontend
+      run: docker build . --file frontend/Dockerfile --tag frontend:$(date +%s)
+      
+    - name: Build Corona Backend
+      run: docker build . --file corona-backend/Dockerfile --tag corona-backend:$(date +%s)
+      
+    - name: Build Country Backend
+      run: docker build . --file country-backend/Dockerfile --tag country-backend:$(date +%s)
