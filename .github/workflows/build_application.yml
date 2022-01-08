@@ -15,10 +15,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build Frontend
-      run: docker build . --file frontend/Dockerfile --tag frontend:$(date +%s)
+      run: ocker build ./frontend --file frontend/Dockerfile --tag frontend:$(date +%s)
       
     - name: Build Corona Backend
-      run: docker build . --file corona-backend/Dockerfile --tag corona-backend:$(date +%s)
+      run: docker build ./corona-backend --file corona-backend/Dockerfile --tag corona-backend:$(date +%s)
       
     - name: Build Country Backend
-      run: docker build . --file country-backend/Dockerfile --tag country-backend:$(date +%s)
+      run: docker build ./country-backend --file country-backend/Dockerfile --tag country-backend:$(date +%s)
