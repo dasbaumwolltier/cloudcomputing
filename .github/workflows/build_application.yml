@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build Frontend
-      run: ocker build ./frontend --file frontend/Dockerfile --tag frontend:$(date +%s)
+      run: docker build ./frontend --file frontend/Dockerfile --tag frontend:$(date +%s)
       
     - name: Build Corona Backend
       run: docker build ./corona-backend --file corona-backend/Dockerfile --tag corona-backend:$(date +%s)
