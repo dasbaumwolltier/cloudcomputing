@@ -158,7 +158,7 @@ Guldner Gabriel - [@dasbaumwolltier](https://github.com/dasbaumwolltier) - gabri
 
 Kainzinger Alexander - [@alexkainzinger](https://github.com/alexkainzinger) - alexander@kainzinger.dev
 
-Schwap Tobias - [@SchwapTobi](https://github.com/SchwapTobi) - tbd
+Schwap Tobias - [@SchwapTobi](https://github.com/SchwapTobi) - tobias.schwap@gmail.com
 
 Project Link: [https://github.com/dasbaumwolltier/cloudcomputing](https://github.com/dasbaumwolltier/cloudcomputing)
 
