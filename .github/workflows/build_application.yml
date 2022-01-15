@@ -26,10 +26,10 @@ jobs:
         password: ${{ secrets.REGISTRY_PASSWORD }}
 
     - name: Build Frontend
-      run: docker build ./frontend --file frontend/Dockerfile --tag frontend:${{RELEASE_DATE}} && docker push frontend:${{RELEASE_DATE}}
+      run: docker build ./frontend --file frontend/Dockerfile --tag frontend:${{GITHUB_SHA}} && docker push frontend:${{GITHUB_SHA}}
       
     - name: Build Corona Backend
-      run: docker build ./corona-backend --file corona-backend/Dockerfile --tag corona-backend:${{RELEASE_DATE}} && docker push corona-backend:${{RELEASE_DATE}}
+      run: docker build ./corona-backend --file corona-backend/Dockerfile --tag corona-backend:${{GITHUB_SHA}} && docker push corona-backend:${{GITHUB_SHA}}
       
     - name: Build Country Backend
-      run: docker build ./country-backend --file country-backend/Dockerfile --tag country-backend:${{RELEASE_DATE}} && docker push country-backend:${{RELEASE_DATE}}
+      run: docker build ./country-backend --file country-backend/Dockerfile --tag country-backend:${{GITHUB_SHA}} && docker push country-backend:${{GITHUB_SHA}}
