@@ -13,7 +13,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    
     - uses: actions/checkout@v2
+
+    - name: Login
+      uses: docker/login-action@v1
+      with:
+        registry: registry.guldner.eu
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+
     - name: Build Frontend
       run: docker build ./frontend --file frontend/Dockerfile --tag frontend:$(date +%s)
       
