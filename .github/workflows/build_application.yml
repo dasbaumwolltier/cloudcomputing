@@ -13,8 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    
     - uses: actions/checkout@v2
+
+    - name: Set current date as env variable
+      run: echo "TIMESTAMP::$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
 
     - name: Login
       uses: docker/login-action@v1
@@ -24,10 +26,10 @@ jobs:
         password: ${{ secrets.REGISTRY_PASSWORD }}
 
     - name: Build Frontend
-      run: docker build ./frontend --file frontend/Dockerfile --tag frontend:$(date +%s) && docker push
+      run: docker build ./frontend --file frontend/Dockerfile --tag frontend:$(TIMESTAMP) && docker push frontend:$(TIMESTAMP)
       
     - name: Build Corona Backend
-      run: docker build ./corona-backend --file corona-backend/Dockerfile --tag corona-backend:$(date +%s) && docker push
+      run: docker build ./corona-backend --file corona-backend/Dockerfile --tag corona-backend:$(TIMESTAMP) && docker push corona-backend:$(TIMESTAMP)
       
     - name: Build Country Backend
-      run: docker build ./country-backend --file country-backend/Dockerfile --tag country-backend:$(date +%s) && docker push
+      run: docker build ./country-backend --file country-backend/Dockerfile --tag country-backend:$(TIMESTAMP) && docker push country-backend:$(TIMESTAMP)
