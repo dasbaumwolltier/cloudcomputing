@@ -24,10 +24,10 @@ jobs:
         password: ${{ secrets.REGISTRY_PASSWORD }}
 
     - name: Build Frontend
-      run: docker build ./frontend --file frontend/Dockerfile --tag frontend:$(date +%s)
+      run: docker build ./frontend --file frontend/Dockerfile --tag frontend:$(date +%s) && docker push
       
     - name: Build Corona Backend
-      run: docker build ./corona-backend --file corona-backend/Dockerfile --tag corona-backend:$(date +%s)
+      run: docker build ./corona-backend --file corona-backend/Dockerfile --tag corona-backend:$(date +%s) && docker push
       
     - name: Build Country Backend
-      run: docker build ./country-backend --file country-backend/Dockerfile --tag country-backend:$(date +%s)
+      run: docker build ./country-backend --file country-backend/Dockerfile --tag country-backend:$(date +%s) && docker push
