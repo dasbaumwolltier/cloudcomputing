@@ -17,6 +17,9 @@ jobs:
 
     - name: set release date
       run: echo "RELEASE_DATE=$(date --rfc-3339=date)" >> $GITHUB_ENV
+      
+    - name: test
+      run: echo ${{RELEASE_DATE}}
 
     - name: Login
       uses: docker/login-action@v1
@@ -26,10 +29,10 @@ jobs:
         password: ${{ secrets.REGISTRY_PASSWORD }}
 
     - name: Build Frontend
-      run: docker build ./frontend --file frontend/Dockerfile --tag frontend:${{env.RELEASE_DATE}} && docker push frontend:${{env.RELEASE_DATE}}
+      run: docker build ./frontend --file frontend/Dockerfile --tag frontend:${{RELEASE_DATE}} && docker push frontend:${{RELEASE_DATE}}
       
     - name: Build Corona Backend
-      run: docker build ./corona-backend --file corona-backend/Dockerfile --tag corona-backend:${{env.RELEASE_DATE}} && docker push corona-backend:${{env.RELEASE_DATE}}
+      run: docker build ./corona-backend --file corona-backend/Dockerfile --tag corona-backend:${{RELEASE_DATE}} && docker push corona-backend:${{RELEASE_DATE}}
       
     - name: Build Country Backend
-      run: docker build ./country-backend --file country-backend/Dockerfile --tag country-backend:${{env.RELEASE_DATE}} && docker push country-backend:${{env.RELEASE_DATE}}
+      run: docker build ./country-backend --file country-backend/Dockerfile --tag country-backend:${{RELEASE_DATE}} && docker push country-backend:${{RELEASE_DATE}}
