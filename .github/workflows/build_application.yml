@@ -15,11 +15,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: set release date
-      run: echo "RELEASE_DATE=$(date --rfc-3339=date)" >> $GITHUB_ENV
-      
     - name: test
-      run: echo ${{RELEASE_DATE}}
+      run: echo $GITHUB_SHA
 
     - name: Login
       uses: docker/login-action@v1
