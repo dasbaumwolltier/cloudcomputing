@@ -25,8 +25,8 @@ jobs:
         username: ${{ secrets.REGISTRY_USERNAME }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
 
-#    - name: Build Frontend
-#      run: docker build ./frontend --file frontend/Dockerfile --tag registry.guldner.eu/frontend:${{env.RELEASE_DATE}} && docker push registry.guldner.eu/frontend:${{env.RELEASE_DATE}}
+    - name: Build Frontend
+      run: docker build ./frontend --file frontend/Dockerfile --tag registry.guldner.eu/frontend:${{env.RELEASE_DATE}} && docker push registry.guldner.eu/frontend:${{env.RELEASE_DATE}}
     
     - name: Set Frontend Deployment
       run: sed -ie "s/^\(\s*image\s*:\s*\).*/\1registry.guldner.eu\\/frontend:${{env.RELEASE_DATE}}/" ./cluster/frontend/resources/deployment.yaml && cat ./cluster/frontend/resources/deployment.yaml
@@ -35,10 +35,10 @@ jobs:
       run: docker build ./corona-backend --file corona-backend/Dockerfile --tag registry.guldner.eu/corona-backend:${{env.RELEASE_DATE}} && docker push registry.guldner.eu/corona-backend:${{env.RELEASE_DATE}}
       
     - name: Set Corona Backend Deployment
-      run: bash ./setDeploymentImage.sh corona-backend registry.guldner.eu/corona-backend:${{env.RELEASE_DATE}}
+      run: sed -ie "s/^\(\s*image\s*:\s*\).*/\1registry.guldner.eu\\/corona-backend:${{env.RELEASE_DATE}}/" ./cluster/corona-backend/resources/deployment.yaml && cat ./cluster/corona-backend/resources/deployment.yaml
       
     - name: Build Country Backend
       run: docker build ./country-backend --file country-backend/Dockerfile --tag registry.guldner.eu/country-backend:${{env.RELEASE_DATE}} && docker push registry.guldner.eu/country-backend:${{env.RELEASE_DATE}}
 
     - name: Set Country Backend Deployment
-      run: bash ./setDeploymentImage.sh country-backend registry.guldner.eu/country-backend:${{env.RELEASE_DATE}}
+      run: sed -ie "s/^\(\s*image\s*:\s*\).*/\1registry.guldner.eu\\/country-backend:${{env.RELEASE_DATE}}/" ./cluster/country-backend/resources/deployment.yaml && cat ./cluster/country-backend/resources/deployment.yaml
