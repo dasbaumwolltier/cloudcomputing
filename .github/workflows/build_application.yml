@@ -29,22 +29,16 @@ jobs:
       run: docker build ./frontend --file frontend/Dockerfile --tag registry.guldner.eu/frontend:${{env.RELEASE_DATE}} && docker push registry.guldner.eu/frontend:${{env.RELEASE_DATE}}
     
     - name: Set Frontend Deployment
-      shell: bash
-      run: |
-          setDeploymentImage.sh frontend registry.guldner.eu/frontend:${{env.RELEASE_DATE}}
+      run: bash ./setDeploymentImage.sh frontend registry.guldner.eu/frontend:${{env.RELEASE_DATE}}
     
     - name: Build Corona Backend
       run: docker build ./corona-backend --file corona-backend/Dockerfile --tag registry.guldner.eu/corona-backend:${{env.RELEASE_DATE}} && docker push registry.guldner.eu/corona-backend:${{env.RELEASE_DATE}}
       
     - name: Set Corona Backend Deployment
-      shell: bash
-      run: |
-        setDeploymentImage.sh corona-backend registry.guldner.eu/corona-backend:${{env.RELEASE_DATE}}
+      run: bash ./setDeploymentImage.sh corona-backend registry.guldner.eu/corona-backend:${{env.RELEASE_DATE}}
       
     - name: Build Country Backend
       run: docker build ./country-backend --file country-backend/Dockerfile --tag registry.guldner.eu/country-backend:${{env.RELEASE_DATE}} && docker push registry.guldner.eu/country-backend:${{env.RELEASE_DATE}}
 
     - name: Set Country Backend Deployment
-      shell: bash
-      run: |
-        setDeploymentImage.sh country-backend registry.guldner.eu/country-backend:${{env.RELEASE_DATE}}
+      run: bash ./setDeploymentImage.sh country-backend registry.guldner.eu/country-backend:${{env.RELEASE_DATE}}
