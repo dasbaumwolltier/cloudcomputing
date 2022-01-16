@@ -29,7 +29,7 @@ jobs:
 #      run: docker build ./frontend --file frontend/Dockerfile --tag registry.guldner.eu/frontend:${{env.RELEASE_DATE}} && docker push registry.guldner.eu/frontend:${{env.RELEASE_DATE}}
     
     - name: Set Frontend Deployment
-      run: sed -ie "s/^\(\s*image\s*:\s*\).*/\1registry.guldner.eu\\/frontend:${{env.RELEASE_DATE}}/" ./cluster/frontend/resources/deployment.yaml && echo ./cluster/frontend/resources/deployment.yaml
+      run: sed -ie "s/^\(\s*image\s*:\s*\).*/\1registry.guldner.eu\\/frontend:${{env.RELEASE_DATE}}/" ./cluster/frontend/resources/deployment.yaml && cat ./cluster/frontend/resources/deployment.yaml
     
     - name: Build Corona Backend
       run: docker build ./corona-backend --file corona-backend/Dockerfile --tag registry.guldner.eu/corona-backend:${{env.RELEASE_DATE}} && docker push registry.guldner.eu/corona-backend:${{env.RELEASE_DATE}}
