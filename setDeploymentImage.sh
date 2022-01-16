@@ -16,4 +16,6 @@ fi
 
 DEPLOYMENT_FILE="./cluster/$SERVICE/resources/deployment.yaml"
 
+cat $DEPLOYMENT_FILE
 sed -i '0,/^\([[:space:]]*image: *\).*/s//\1'$TAG_NAME'/;' $DEPLOYMENT_FILE
+cat $DEPLOYMENT_FILE
