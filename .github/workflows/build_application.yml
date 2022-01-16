@@ -15,8 +15,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: test
-      run: echo $GITHUB_SHA
+    - name: Set current timestamp
+      run: echo "RELEASE_DATE=$(date +'+%Y%m%d-%H%M')" >> $GITHUB_ENV && echo $(env.RELEASE_DATE)
 
     - name: Login
       uses: docker/login-action@v1
