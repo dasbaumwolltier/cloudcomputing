@@ -17,5 +17,6 @@ TAG_NAME="$2"	# e.d registry.guldner.eu/frontend:20220116-1320
 DEPLOYMENT_FILE="./cluster/$SERVICE/resources/deployment.yaml"
 
 cat $DEPLOYMENT_FILE
-sed -i '0,/^\([[:space:]]*image: *\).*/s//\1'$TAG_NAME'/;' $DEPLOYMENT_FILE
+#sed -i '0,/^\([[:space:]]*image: *\).*/s//\1'$TAG_NAME'/;' $DEPLOYMENT_FILE
+sed -i  "/^\([[:space:]]*image: \).*/s//\1$TAG_NAME/" $DEPLOYMENT_FILE
 cat $DEPLOYMENT_FILE
