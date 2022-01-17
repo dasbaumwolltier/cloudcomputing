@@ -74,7 +74,7 @@
 
 [![Frontend][product-screenshot]](https://schwap.kainzinger.guldner.eu)
 
-tbd
+The project should show how much effort and development is needed to have a fully automated CI/CD flow using GitHub Actions as a CI for building, (testing), and creating deployment images as well as a tool called ArgoCD as continuous delivery tool.
 
 <!-- There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
 
