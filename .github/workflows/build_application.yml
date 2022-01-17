@@ -14,7 +14,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
+      with: 
+        token: ${{ secrets.PAT }} 
+      
     - name: Set current timestamp
       run: echo "RELEASE_DATE=$(date +'%Y%m%d-%H%M')" >> $GITHUB_ENV
       
@@ -48,4 +50,3 @@ jobs:
       with:
           commit_message: "[Deployment] Updated Resources"
           branch: deployment
-          token: ${{ secrets.PAT }}
