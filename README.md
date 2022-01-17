@@ -29,7 +29,7 @@
   <p align="center">
     Project for: Cloud Computing Architectures, Processes and Operations
     <br />
-    <a href="https://github.com/dasbaumwolltier/cloudcomputing/README.md"><strong>Explore the docs »
+    <a href="https://github.com/dasbaumwolltier/cloudcomputing/blob/master/DOCUMENTATION.md"><strong>Explore the docs »
     </strong></a>
     <br />
     <br />
@@ -57,7 +57,7 @@
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#frontend">Frontend</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -97,7 +97,7 @@ This section lists all major frameworks/libraries/languages used to bootstrap ou
 * [TypeScript](https://www.typescriptlang.org/)
 * [Node.js](https://nodejs.org/)
 * [React.js](https://reactjs.org/)
-* [Tailwind](https://tailwindcss.com/)
+* [Tailwind CSS](https://tailwindcss.com/)
 * [Cargo](https://crates.io/)
 * [NPM](https://www.npmjs.com/)
 
@@ -108,25 +108,25 @@ This section lists all major frameworks/libraries/languages used to bootstrap ou
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+This section should give a quick overview how each service (frontend, country-backend, and corona-backend) can extended or modified.
 
 ### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-* yarn
-  ```sh
-  npm install -g yarn@1.22
-  ```
-
-### Installation
-
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
 
 1. Clone the repo
    ```sh
    git clone https://github.com/dasbaumwolltier/cloudcomputing.git
    ```
+
+2. Open the repository in your favorite IDE (we recommend [VSCode](https://code.visualstudio.com/))
+   ```sh
+   cd cloudcomputing && code .
+   ```
+
+
+### Frontend
+
+[Read the Getting Started tutorial in the frontend folder](frontend/README.md)
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -137,7 +137,7 @@ _Below is an example of how you can instruct your audience on installing and set
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+_For more examples, please refer to the [Documentation](https://github.com/dasbaumwolltier/cloudcomputing/blob/master/DOCUMENTATION.md)_
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
