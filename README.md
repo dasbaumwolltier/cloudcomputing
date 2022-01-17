@@ -100,6 +100,7 @@ This section lists all major frameworks/libraries/languages used to bootstrap ou
 * [Tailwind CSS](https://tailwindcss.com/)
 * [Cargo](https://crates.io/)
 * [NPM](https://www.npmjs.com/)
+* [Yarn](https://yarnpkg.com/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -173,6 +174,7 @@ This space includes a list of resource which are helpful and should be given cre
 
 * [Choose an Open Source License](https://choosealicense.com)
 * [Dockerfile reference](https://docs.docker.com/engine/reference/builder/)
+* [unDraw](https://undraw.co/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
