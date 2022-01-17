@@ -42,3 +42,10 @@ jobs:
 
     - name: Set Country Backend Deployment
       run: sed -ie "s/^\(\s*image\s*:\s*\).*/\1registry.guldner.eu\\/country-backend:${{env.RELEASE_DATE}}/" ./cluster/country-backend/resources/deployment.yaml && cat ./cluster/country-backend/resources/deployment.yaml
+
+    - name: Commit deployment Files
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+          commit_message: "[Deployment] Updated Resources"
+          branch: deployment
+          token: ${{ secrets.PAT }}
