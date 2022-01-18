@@ -89,6 +89,27 @@ For the resulting image which is pushed to the registry, we chose Nginx's alpine
 ### Corona Backend
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+The corona backend is built using [Rust](https://www.rust-lang.org/) using [actix](https://actix.rs/) as a web server. It provides an API, allowing the client to fetch corona data based on country with optionally being able to specify the time range of the data.
+
+It gets this data from the API [covid19api](https://api.covid19api.com) using the [reqwest](https://github.com/seanmonstar/reqwest) library to fetch it on demand. It then caches this response using the [cached](https://github.com/jaemk/cached), making the following requests to the backend more performant.
+
+The image of the backend is built with multi-stage builds, which allow the developer having a build and a final Dockerfile, allowing the developer to copy files and directories from the build Dockerfile.
+
+In this case, the image `rust-musl-builder` is used, which makes it possible building a statically linked rust executable. This means that all the dependencies including the standard library and others (like openssl) are bundled in one executable. This also means that the release Docker image consists only of an Alpine-Linux image and the executable:
+
+```Dockerfile
+FROM alpine:3.15
+
+RUN apk update &&\
+    apk upgrade &&\
+    apk --no-cache add ca-certificates
+
+COPY --from=build /build/target/x86_64-unknown-linux-musl/release/corona-backend /usr/local/bin/corona-backend
+RUN chmod +x /usr/local/bin/corona-backend
+
+ENTRYPOINT /usr/local/bin/corona-backend
+```
+
 ### Country Backend
 <p align="right">(<a href="#top">back to top</a>)</p>
 
