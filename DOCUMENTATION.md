@@ -133,6 +133,9 @@ ArgoCD is a declarative, GitOps continuous delivery tool for Kubernetes which he
 ## Deployment
 The project was deployed on a personal Kubernetes cluster. 
 
+### Build Process
+TODO: github actions
+
 ### Prerequisites
 This cluster was already set-up with various basics, assumed to be prerequisites for this repository:
 * Kubernetes cluster with working pod-to-pod communication (Using, for example, [Flannel](https://github.com/flannel-io/flannel))
