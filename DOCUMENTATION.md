@@ -19,9 +19,9 @@
     <li>
       <a href="#used-technologies">Used Technologies</a>
       <ul>
-        <li><a href="#todo">ArgoCD</a></li>
-        <li><a href="#todo">TODO</a></li>
-		    <li><a href="#todo">TODO</a></li>
+        <li><a href="#helm-chart">Helm chart</a></li>
+        <li><a href="#argocd">ArgoCD</a></li>
+		    <li><a href="#github-actions">GitHub Actions</a></li>
       </ul>
     </li>
     <li>
@@ -88,7 +88,6 @@ For the resulting image which is pushed to the registry, we chose Nginx's alpine
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Corona Backend
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 The corona backend is built using [Rust](https://www.rust-lang.org/) using [actix](https://actix.rs/) as a web server. It provides an API, allowing the client to fetch corona data based on country with optionally being able to specify the time range of the data.
 
@@ -156,9 +155,9 @@ ArgoCD is a declarative, GitOps continuous delivery tool for Kubernetes which he
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-### Github Actions
+### GitHub Actions
 
-[Github Actions](https://github.com/features/actions) is a continuous integration and continuous delivery (CI/CD) tool that helps automating builds, tests, deployments, etc. Workflows can be created easily directly in the projects Github repository which can then handle different events (e.g opened pull requests, commits to a specific branch, opened issues, etc.). These events then trigger Jobs that execute specific tasks.
+[GitHub Actions](https://github.com/features/actions) is a continuous integration and continuous delivery (CI/CD) tool that helps automating builds, tests, deployments, etc. Workflows can be created easily directly in the projects GitHub repository which can then handle different events (e.g opened pull requests, commits to a specific branch, opened issues, etc.). These events then trigger Jobs that execute specific tasks.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -166,7 +165,7 @@ ArgoCD is a declarative, GitOps continuous delivery tool for Kubernetes which he
 The project was deployed on a personal Kubernetes cluster. 
 
 ### Build Process
-As mentioned in the Technology section, we use Github Actions to build the services. This happens in several steps:
+As mentioned in the Technology section, we use GitHub Actions to build the services. This happens in several steps:
 
 - Prepare
   - sets release date
@@ -179,7 +178,7 @@ As mentioned in the Technology section, we use Github Actions to build the servi
 
 - 
 
-![Github Actions](images/github_actions.jpg)
+![GitHub Actions](images/github_actions.jpg)
 
 ### Prerequisites
 This cluster was already set-up with various basics, assumed to be prerequisites for this repository:
@@ -286,7 +285,7 @@ spec:
 * Docker
 
 ### Installation Steps
-1. Deploy argo
+1. Deploy ArgoCD
 `cd cluster && kustomization build --enable-helm argo > out.yaml && kubectl apply -f out.yaml`
 1. Deploy registry  
 `cd cluster && kustomization build --enable-helm registry > out.yaml && kubectl apply -f out.yaml`
@@ -295,5 +294,31 @@ spec:
 1. Deploy rest
 `cd cluster && kustomization build --enable-helm all > out.yaml && kubectl apply -f out.yaml`
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ## Lessons Learned
-TODO
+
+In general we are amazed how relatively easy and fast you can build and ship an entire application which is split up into multiple independent microservices.
+
+Starting off, microservices are just amazing! It allows teams of individual sizes to build independent services in their own preferred programming language and framework.
+Also, they can be scaled much easier than huge monolithic applications while maintaining good performance by intelligently splitting up load across all replicas.
+
+When combining microservices and intelligent continuous delivery tools like ArgoCD for Kubernetes, the only time you should experience downtime is when your whole cluster fails (which is highly unlikely for huge cloud providers such as AWS, Google Cloud or Azure). ArgoCD not only syncs your configs inside your cluster, it also provides a great overview how your pods/services/etc. are doing and what configurations changed in a newer version in a config file. It is also astonishing, that ArgoCD is basically a "set and forget" deployment with an intuitive UI to add and manage your applications that just works.
+
+GitHub Actions are also great to use due to their community-powered workflows which provide a simple way to make use of more advanced workflows that otherwise would require more configuration/installation inside an CI job. For example, instead of installing, setting up, logging into Docker for each individual job, we just used a workflow ``docker/login-action@v1``, entered the our custom registry url + login credentials and where ready to build and push Docker images to the registry.
+
+```yaml
+...
+  - name: Login
+    uses: docker/login-action@v1
+    with:
+      registry: registry.guldner.eu
+      username: ${{ secrets.REGISTRY_USERNAME }}
+      password: ${{ secrets.REGISTRY_PASSWORD }}
+...
+```
+GitHub Actions might also run different kinds of test (e2e test, unit test, etc.) before building the application to make sure everything is still working as intended. With good test coverage it would also be more safe to enable auto-sync in ArgoCD to instantly deploy new versions without manual syncing. 
+
+For us, it was clear to have a monorepo in the beginning that holds the code of each backend and the frontend as well as all all the Kubernetes configs and resources. The main advantage of this is the better overview of the whole project  when building and setting everything up for the first time. In the long run or if more team work on the same application, it would be better to split the applications and the Kubernetes resources into at least two repositories (code + infrastructure) to be better manageable.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
