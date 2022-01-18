@@ -129,3 +129,5 @@ jobs:
         with:
           commit_message: "ci: updated resources"
           branch: deployment
+          skip_checkout: true
+          push_options: --force
