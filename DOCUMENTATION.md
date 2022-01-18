@@ -30,6 +30,7 @@
         <li><a href="#todo">TODO</a></li>
       </ul>
     </li>
+    <li><a href="#lessons-learned">Lessons Learned</a></li>
   </ol>
 </details>
 
@@ -229,5 +230,5 @@ spec:
     secretName: schwap.kainzinger.guldner.eu
 ```
 
-## Learnings
+## Lessons Learned
 TODO
