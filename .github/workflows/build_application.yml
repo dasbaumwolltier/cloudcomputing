@@ -3,8 +3,6 @@ name: Build & Deploy
 on:
   push:
     branches: [master]
-  pull_request:
-    branches: [master]
 
 jobs:
   prepare:
@@ -112,16 +110,19 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build-frontend-deployment-yml
+          path: cluster/frontend/resources
 
       - name: Download build-country-backend-deployment-yml
         uses: actions/download-artifact@v2
         with:
           name: build-country-backend-deployment-yml
+          path: cluster/country-backend/resources
 
       - name: Download build-corona-backend-deployment-yml
         uses: actions/download-artifact@v2
         with:
           name: build-corona-backend-deployment-yml
+          path: cluster/corona-backend/resources
 
       - name: Commit deployment Files
         uses: stefanzweifel/git-auto-commit-action@v4
