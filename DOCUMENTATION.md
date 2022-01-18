@@ -51,6 +51,8 @@ The following illustration should show the whole architecture we are using
 
 ## Services
 
+For this project we developed three different, independent services. Two backend API services which are developed in Rust and TypeScript as well as a frontend which uses those two APIs to illustrate some data.
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Frontend
@@ -110,6 +112,8 @@ RUN chmod +x /usr/local/bin/corona-backend
 ENTRYPOINT /usr/local/bin/corona-backend
 ```
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ### Country Backend
 The Country Backend is built as a [Node.js](https://nodejs.org/en/) microservice using the [Express.js](https://expressjs.com/) framework in combination with [Typescript](https://www.typescriptlang.org/). The REST API has a simple interface to fetch country data used for the country selector in the web application. 
 Via a `GET` request to the `/api/all` endpoint, a JSON of all countries and their specific data is returned. For the country data, we used the [Rest Countries](https://restcountries.com/) project as a source, which provides all kind of interesting data to each country on the planet. 
@@ -143,11 +147,13 @@ CMD ["dist/index.js"]
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Used Technologies
+The following section includes some of the most important technologies we used for this project.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Helm chart
-tbd
+Helm chart is a package manager for Kubernetes which helps you to manage very complex Kubernetes applications. With the help of Helm, it is easier to update, share and potentially rollback complex applications which have a lot of different dependencies. In our case, we used the "Bitnami" version of ArgoCD to deploy it as well as to configure it to our needs. For example, we decided to re-use an existing Redis database which was already running on the cluster instead of having it deployed via the default ArgoCD install.
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### ArgoCD
