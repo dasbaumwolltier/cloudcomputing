@@ -157,7 +157,26 @@ Helm chart is a package manager for Kubernetes which helps you to manage very co
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### ArgoCD
-ArgoCD is a declarative, GitOps continuous delivery tool for Kubernetes which helps us to automate, audit, and easy understand our application definitions, configurations and environments. It also is versioned controlled which means that we can always recover and rollback fairly easy and fast. 
+ArgoCD is a declarative, GitOps continuous delivery tool for Kubernetes which helps us to automate, audit, and easy understand our application definitions, configurations and environments. It also is versioned controlled which means that we can always recover and rollback fairly easy and fast.
+
+It consists  of three main components:
+1. API Server: API which exposes the API consumed by the Web UI, CLI and CI/CD systems. For example, it is the listener/forwarder for Git webhook events or responsible for invoking of application operations (e.g. sync, rollback, user-defined actions)
+2. Repository Server: an internal service which maintains a local cache of the Git repository holding the application manifests. It is responsible for generating and returning the Kubernetes manifests when provided with inputs such as the repository url, revision, template specific settings, etc.
+3. Application Controller: a service which continuously monitors running applications and compares the current, live state against the desired target state. Its main responsibility is to detect OutOfSync applications states and optionally take corrective action
+
+Adding applications to ArgoCD is fairly simple and convenient. 
+1. You provide a name, choose the project you want to add it to
+2. Set the sync policy (+ optional sync options)
+3. Set your "Source", in our case the GitHub repository + a branch
+4. Set your "Destination" in the cluster (cluster URL + namespace)
+
+... everything else is automatically done by ArgoCD in the background
+
+![ArgoCD](images/argocd.png)
+
+Once all applications have been added, the dashboard shows all of them with their current status. It also provides more details when clicking on the application itself.
+
+[Link to ArgoCD docs](https://argo-cd.readthedocs.io/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -180,11 +199,10 @@ As mentioned in the Technology section, we use GitHub Actions to build the servi
   - pushes image to registry
   - updates deployment yaml
 - update-resources
-  - pushes changes to deployment branch
+  - pushes changes to `deployment` branch
+ 
 
-- 
-
-![GitHub Actions](images/github_actions.jpg)
+![GitHub Actions](images/github_action.png)
 
 ### Prerequisites
 This cluster was already set-up with various basics, assumed to be prerequisites for this repository:
@@ -282,6 +300,8 @@ spec:
   tls:
     secretName: schwap.kainzinger.guldner.eu
 ```
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Installation
 ### Installation Prerequisites
