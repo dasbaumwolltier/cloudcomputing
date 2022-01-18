@@ -227,3 +227,6 @@ spec:
   tls:
     secretName: schwap.kainzinger.guldner.eu
 ```
+
+## Learnings
+TODO
