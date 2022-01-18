@@ -91,7 +91,7 @@ For the resulting image which is pushed to the registry, we chose Nginx's alpine
 
 The corona backend is built using [Rust](https://www.rust-lang.org/) using [actix](https://actix.rs/) as a web server. It provides an API, allowing the client to fetch corona data based on country with optionally being able to specify the time range of the data.
 
-It gets this data from the API [covid19api](https://api.covid19api.com) using the [reqwest](https://github.com/seanmonstar/reqwest) library to fetch it on demand. It then caches this response using the [cached](https://github.com/jaemk/cached), making the following requests to the backend more performant.
+It gets this data from the API [covid19api](https://api.covid19api.com) using the [reqwest](https://github.com/seanmonstar/reqwest) library to fetch it on demand. It then caches this response using the [cached](https://github.com/jaemk/cached) library, making the following requests to the backend more performant.
 
 The image of the backend is built with multi-stage builds, which allow the developer having a build and a final Dockerfile, allowing the developer to copy files and directories from the build Dockerfile.
 
@@ -129,3 +129,101 @@ ArgoCD is a declarative, GitOps continuous delivery tool for Kubernetes which he
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Deployment
+The project was deployed on a personal Kubernetes cluster. 
+
+### Prerequisites
+This cluster was already set-up with various basics, assumed to be prerequisites for this repository:
+* Kubernetes cluster with working pod-to-pod communication (Using, for example, [Flannel](https://github.com/flannel-io/flannel))
+* [Traefik](https://traefik.io/)  
+This is a reverse proxy and service load balancer, accepting requests from outside and routing them to the appropriate service, based on `IngressRoutes`
+* [cert-manager](https://cert-manager.io/docs/)  
+This allows for automatically requesting a TLS certificate from [Let's Encrypt](https://letsencrypt.org/).
+
+### Repository structure
+To keep the repository structured and the Kubernetes YAML configs readable, we used Kustomize. This program builds a ready-to-apply YAML out of multiple imported YAMLs, making the maintenance of the repository easier. It furthermore is able to use [Helm Charts](https://helm.sh) as a basis with the ability to patch those with handwritten config.
+
+Although Kustomize is normally used for large clusters with multiple environments, where there exists one base config and patches are applied on top of them, it also shines in splitting various configs up.
+
+### Deployment structure
+All of the custom deployments that we wrote, a build in a similar manner. They contain five important files:
+* `kustomization.yaml`  
+This is the base file for Kustomize, letting it know which configs to include when building the final config.
+```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - resources/deployment.yaml
+  - resources/ingress.yaml
+  - resources/service.yaml
+```
+
+* `deployment.yaml`  
+The deployment controls how many pods run where and what "templates" those pods have. This config, for example, tells Kubernetes to create one replica of a pod with the image `registry.guldner.eu/cloudcomp-corona-backend:20211219-1852`, while exposing the port `8080`. One more important thing is the `label`, which will be needed for the service.
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: corona-backend
+  namespace: cloudcomputing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudcomp-corona-backend
+  template:
+    metadata:
+      labels:
+        app: cloudcomp-corona-backend
+    spec:
+      containers:
+      - name: cloudcomp-corona-backend
+        image: registry.guldner.eu/cloudcomp-corona-backend:20211219-1852
+        ports:
+        - containerPort: 8080
+      imagePullSecrets:
+      - name: pull-secret
+```
+* `service.yaml`  
+This is the connector between the deployment and the ingress. It specifies basically a service, which is an abstraction layer, making it available to everyone in the cluster. This config specifies that the service accepts packets at port `8080`, which are then forwarded to any pod matching the `label` on the port `8080`.
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloudcomp-corona-backend
+  namespace: cloudcomputing
+  labels:
+    app: cloudcomp-corona-backend
+spec:
+  selector:
+    app: cloudcomp-corona-backend
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+```
+
+* `ingress.yaml`  
+The last config needed is the `IngressRoute`. This tells Traefik how and what HTTP requests to route to the service created previously. In this case it also defines a middleware, that strips the prefix of the path (`/corona`).
+```yaml
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: corona-backend
+  namespace: cloudcomputing
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`schwap.kainzinger.guldner.eu`) && PathPrefix(`/corona`)
+    services:
+    - name: cloudcomp-corona-backend
+      scheme: http
+      port: 8080
+    middlewares:
+    - name: stripprefix
+  tls:
+    secretName: schwap.kainzinger.guldner.eu
+```
