@@ -12,17 +12,9 @@ use serde_with::skip_serializing_none;
 pub struct CoronaBackendResponse {
     country: String,
     date: DateTime<Utc>,
-
-    #[serde(skip_serializing_if = "is_zero")]
     confirmed: u64,
-
-    #[serde(skip_serializing_if = "is_zero")]
     deaths: u64,
-
-    #[serde(skip_serializing_if = "is_zero")]
     recovered: u64,
-
-    #[serde(skip_serializing_if = "is_zero")]
     active: u64,
 }
 
