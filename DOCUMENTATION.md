@@ -112,7 +112,35 @@ ENTRYPOINT /usr/local/bin/corona-backend
 ```
 
 ### Country Backend
-TODO
+The Country Backend is built as a [Node.js](https://nodejs.org/en/) microservice using the [Express.js](https://expressjs.com/) framework in combination with [Typescript](https://www.typescriptlang.org/). The REST API has a simple interface to fetch country data used for the country selector in the web application. 
+Via a `GET` request to the `/api/all` endpoint, a JSON of all countries and their specific data is returned. For the country data, we used the [Rest Countries](https://restcountries.com/) project as a source, which provides all kind of interesting data to each country on the planet. 
+
+There are also start and build scripts and a Dockerfile configuration to create an image of this microservice:
+
+```Dockerfile
+FROM node:14-alpine as base
+
+COPY package.json ./
+COPY yarn.lock ./
+
+RUN yarn install
+
+COPY src ./src
+COPY tsconfig.json ./tsconfig.json
+
+RUN yarn build
+
+
+# second stage containing only necessary files & directories
+FROM node:14-alpine
+
+COPY --from=base ./node_modules ./node_modules
+COPY --from=base /dist /dist
+
+EXPOSE 8081
+CMD ["dist/index.js"]
+```
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Used Technologies
