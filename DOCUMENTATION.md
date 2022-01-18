@@ -119,12 +119,13 @@ TODO
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+### Helm chart
+tbd
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ### ArgoCD
 ArgoCD is a declarative, GitOps continuous delivery tool for Kubernetes which helps us to automate, audit, and easy understand our application definitions, configurations and environments. It also is versioned controlled which means that we can always recover and rollback fairly easy and fast. 
 
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-### Todo
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Todo
