@@ -145,7 +145,7 @@ To keep the repository structured and the Kubernetes YAML configs readable, we u
 Although Kustomize is normally used for large clusters with multiple environments, where there exists one base config and patches are applied on top of them, it also shines in splitting various configs up.
 
 ### Deployment structure
-All of the custom deployments that we wrote, a build in a similar manner. They contain five important files:
+All the custom deployments that we wrote, are built similarly. They contain four important files:
 * `kustomization.yaml`  
 This is the base file for Kustomize, letting it know which configs to include when building the final config.
 ```yaml

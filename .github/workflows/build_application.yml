@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with: 
-        token: ${{ secrets.PAT }} 
+        token: ${{ secrets.TOKEN }} 
       
     - name: Set current timestamp
       run: echo "RELEASE_DATE=$(date +'%Y%m%d-%H%M')" >> $GITHUB_ENV
