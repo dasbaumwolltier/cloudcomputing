@@ -1,52 +1,130 @@
-name: BUILD_APPLICATION
+name: Build & Deploy
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
-
-  build:
-
+  prepare:
     runs-on: ubuntu-latest
+    outputs:
+      release_date: ${{ steps.set_date.outputs.date }}
+    steps:
+      - id: set_date
+        run: echo "::set-output name=date::$(date +'%Y%m%d-%H%M')"
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    needs: prepare
 
     steps:
-    - uses: actions/checkout@v2
-      with: 
-        token: ${{ secrets.TOKEN }} 
-      
-    - name: Set current timestamp
-      run: echo "RELEASE_DATE=$(date +'%Y%m%d-%H%M')" >> $GITHUB_ENV
-      
-    - name: Login
-      uses: docker/login-action@v1
-      with:
-        registry: registry.guldner.eu
-        username: ${{ secrets.REGISTRY_USERNAME }}
-        password: ${{ secrets.REGISTRY_PASSWORD }}
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.TOKEN }}
 
-    - name: Build Frontend
-      run: docker build ./frontend --file frontend/Dockerfile --tag registry.guldner.eu/frontend:${{env.RELEASE_DATE}} && docker push registry.guldner.eu/frontend:${{env.RELEASE_DATE}}
-    
-    - name: Set Frontend Deployment
-      run: sed -ie "s/^\(\s*image\s*:\s*\).*/\1registry.guldner.eu\\/frontend:${{env.RELEASE_DATE}}/" ./cluster/frontend/resources/deployment.yaml && cat ./cluster/frontend/resources/deployment.yaml
-    
-    - name: Build Corona Backend
-      run: docker build ./corona-backend --file corona-backend/Dockerfile --tag registry.guldner.eu/corona-backend:${{env.RELEASE_DATE}} && docker push registry.guldner.eu/corona-backend:${{env.RELEASE_DATE}}
-      
-    - name: Set Corona Backend Deployment
-      run: sed -ie "s/^\(\s*image\s*:\s*\).*/\1registry.guldner.eu\\/corona-backend:${{env.RELEASE_DATE}}/" ./cluster/corona-backend/resources/deployment.yaml && cat ./cluster/corona-backend/resources/deployment.yaml
-      
-    - name: Build Country Backend
-      run: docker build ./country-backend --file country-backend/Dockerfile --tag registry.guldner.eu/country-backend:${{env.RELEASE_DATE}} && docker push registry.guldner.eu/country-backend:${{env.RELEASE_DATE}}
+      - name: Login
+        uses: docker/login-action@v1
+        with:
+          registry: registry.guldner.eu
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
 
-    - name: Set Country Backend Deployment
-      run: sed -ie "s/^\(\s*image\s*:\s*\).*/\1registry.guldner.eu\\/country-backend:${{env.RELEASE_DATE}}/" ./cluster/country-backend/resources/deployment.yaml && cat ./cluster/country-backend/resources/deployment.yaml
+      - name: Build Frontend
+        run: docker build ./frontend --file frontend/Dockerfile --tag registry.guldner.eu/frontend:${{needs.prepare.outputs.release_date}} && docker push registry.guldner.eu/frontend:${{needs.prepare.outputs.release_date}}
 
-    - name: Commit deployment Files
-      uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-          commit_message: "[Deployment] Updated Resources"
+      - name: Set Frontend Deployment
+        run: sed -ie "s/^\(\s*image\s*:\s*\).*/\1registry.guldner.eu\\/frontend:${{needs.prepare.outputs.release_date}}/" ./cluster/frontend/resources/deployment.yaml && cat ./cluster/frontend/resources/deployment.yaml
+      
+      - name: Upload deployment.yml
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-frontend-deployment-yml
+          path: cluster/frontend/resources/deployment.yaml
+
+  build-country-backend:
+    runs-on: ubuntu-latest
+    needs: prepare
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.TOKEN }}
+
+      - name: Login
+        uses: docker/login-action@v1
+        with:
+          registry: registry.guldner.eu
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build Country Backend
+        run: docker build ./country-backend --file country-backend/Dockerfile --tag registry.guldner.eu/country-backend:${{needs.prepare.outputs.release_date}} && docker push registry.guldner.eu/country-backend:${{needs.prepare.outputs.release_date}}
+
+      - name: Set Country Backend Deployment
+        run: sed -ie "s/^\(\s*image\s*:\s*\).*/\1registry.guldner.eu\\/country-backend:${{needs.prepare.outputs.release_date}}/" ./cluster/country-backend/resources/deployment.yaml && cat ./cluster/country-backend/resources/deployment.yaml
+
+      - name: Upload deployment.yml
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-country-backend-deployment-yml
+          path: cluster/country-backend/resources/deployment.yaml
+
+  build-corona-backend:
+    runs-on: ubuntu-latest
+    needs: prepare
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.TOKEN }}
+
+      - name: Login
+        uses: docker/login-action@v1
+        with:
+          registry: registry.guldner.eu
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build Corona Backend
+        run: docker build ./corona-backend --file corona-backend/Dockerfile --tag registry.guldner.eu/corona-backend:${{needs.prepare.outputs.release_date}} && docker push registry.guldner.eu/corona-backend:${{needs.prepare.outputs.release_date}}
+
+      - name: Set Corona Backend Deployment
+        run: sed -ie "s/^\(\s*image\s*:\s*\).*/\1registry.guldner.eu\\/corona-backend:${{needs.prepare.outputs.release_date}}/" ./cluster/corona-backend/resources/deployment.yaml && cat ./cluster/corona-backend/resources/deployment.yaml
+
+      - name: Upload deployment.yml
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-corona-backend-deployment-yml
+          path: cluster/corona-backend/resources/deployment.yaml
+
+  update-resources:
+    runs-on: ubuntu-latest
+    needs: [build-frontend, build-country-backend, build-corona-backend]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.TOKEN }}
+
+      - name: Download build-frontend-deployment-yml
+        uses: actions/download-artifact@v2
+        with:
+          name: build-frontend-deployment-yml
+
+      - name: Download build-country-backend-deployment-yml
+        uses: actions/download-artifact@v2
+        with:
+          name: build-country-backend-deployment-yml
+
+      - name: Download build-corona-backend-deployment-yml
+        uses: actions/download-artifact@v2
+        with:
+          name: build-corona-backend-deployment-yml
+
+      - name: Commit deployment Files
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "ci: updated resources"
           branch: deployment
