@@ -233,5 +233,22 @@ spec:
     secretName: schwap.kainzinger.guldner.eu
 ```
 
+## Installation
+### Installation Prerequisites
+
+* [See Kubernetes Prerequisites](#prerequisites)
+* Helm3
+* Docker
+
+### Installation Steps
+1. Deploy argo
+`cd cluster && kustomization build --enable-helm argo > out.yaml && kubectl apply -f out.yaml`
+1. Deploy registry  
+`cd cluster && kustomization build --enable-helm registry > out.yaml && kubectl apply -f out.yaml`
+1. Build images and push to registry (if not done by GitHub Action)
+1. Update all deployment.yaml (if not done by GitHub Action)
+1. Deploy rest
+`cd cluster && kustomization build --enable-helm all > out.yaml && kubectl apply -f out.yaml`
+
 ## Lessons Learned
 TODO
