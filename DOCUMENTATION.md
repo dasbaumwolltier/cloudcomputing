@@ -156,7 +156,10 @@ ArgoCD is a declarative, GitOps continuous delivery tool for Kubernetes which he
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-### Todo
+### Github Actions
+
+[Github Actions](https://github.com/features/actions) is a continuous integration and continuous delivery (CI/CD) tool that helps automating builds, tests, deployments, etc. Workflows can be created easily directly in the projects Github repository which can then handle different events (e.g opened pull requests, commits to a specific branch, opened issues, etc.). These events then trigger Jobs that execute specific tasks.
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Deployment
