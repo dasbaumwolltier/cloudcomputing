@@ -163,7 +163,20 @@ ArgoCD is a declarative, GitOps continuous delivery tool for Kubernetes which he
 The project was deployed on a personal Kubernetes cluster. 
 
 ### Build Process
-TODO: github actions
+As mentioned in the Technology section, we use Github Actions to build the services. This happens in several steps:
+
+- Prepare
+  - sets release date
+- build-frontend, build-country-backend, build-corona-backend
+  - builds application based on dockerfile
+  - pushes image to registry
+  - updates deployment yaml
+- update-resources
+  - pushes changes to deployment branch
+
+- 
+
+![Github Actions](images/github_actions.jpg)
 
 ### Prerequisites
 This cluster was already set-up with various basics, assumed to be prerequisites for this repository:
