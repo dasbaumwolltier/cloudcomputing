@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: cloudcomp-country-backend
-        image: registry.guldner.eu/cloudcomp-country-backend:20220104-2000
+        image: registry.guldner.eu/country-backend:20220119-1527
         ports:
         - containerPort: 8081
       imagePullSecrets:

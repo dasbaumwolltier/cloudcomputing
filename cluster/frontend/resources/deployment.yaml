@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: cloudcomp-frontend
-        image: registry.guldner.eu/cloudcomp-frontend:20220104-2113
+        image: registry.guldner.eu/frontend:20220119-1527
         ports:
         - containerPort: 80
       imagePullSecrets:
